@@ -8,7 +8,7 @@
     // Adding new class to our button, that will allow us, to target it by jQuery
     $form['submit']['#attributes']['class'][] = 'add-to-cart-button';
     // Adding new validator, that will make sure that our products with request quote, will not be added to cart
-    $form['#validate'][] = 'MODULE_is_quote_required_validate';
+    $form['#validate'][] = 'commerce_quote_button_is_quote_required_validate';
 
     // Getting value of field_is_quote_required of default product
     $product = $form_state['default_product'];
@@ -18,7 +18,7 @@
     if($field[0]['value'] == 1) {
         unset($form['submit']);
         $form['ask_for_product'] = array(
-            '#markup' => MODULE_ask_for_product($product),
+            '#markup' => commerce_quote_button_ask_for_product($product),
             '#weight' => 50,
         );
     }
