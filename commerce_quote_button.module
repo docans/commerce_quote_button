@@ -44,13 +44,13 @@ function commerce_quote_button_commerce_cart_attributes_refresh_alter(&$commands
     
 // Return markup of our new button. 'node/7' is node of our contact form, 'subject' is a key of our query string
 function commerce_quote_button_ask_for_product($product) {
-    return '<div class="ask-for-product">' . l(t('Ask about product.'), drupal_get_path_alias('node/7'), array('query' => array('subject' => 'Ask about product with SKU: ' . $product->sku))) . '</div>';
+    return '<div class="ask-for-product">' . l(t('Ask about product.'), drupal_get_path_alias('node/7') . '?sku=' . $node->sku, array('query' => array('subject' => 'Ask about product with SKU: ' . $product->sku))) . '</div>';
 }
 
 
 
 // Prevent some products from be added to cart.
-function commerce_quote_button_contact_required_validate($form, &$form_state) {
+function commerce_quote_button_is_quote_required_validate($form, &$form_state) {
 
     $product = $form_state['default_product'];
     $field = field_get_items('commerce_product', $product, 'field_is_contact_required');
