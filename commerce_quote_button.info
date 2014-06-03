@@ -1,0 +1,4 @@
+name = Commerce Quote Button
+description = Changes the (add to cart) button to (Request a Quote) and directs to a webform.
+core = 7.x
+package = Commerce
