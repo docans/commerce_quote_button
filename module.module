@@ -1,0 +1,63 @@
+<?php
+/**
+ * @file
+ * A module that provides a Request Quote functionality for products
+ */
+
+
+
+function HOOK_form_commerce_cart_add_to_cart_form_alter(&$form, &$form_state) {
+    // Adding new class to our button, that will allow us, to target it by jQuery
+    $form['submit']['#attributes']['class'][] = 'add-to-cart-button';
+    // Adding new validator, that will make sure that our products with required contact, will not be added to cart
+    $form['#validate'][] = 'MODULE_is_contact_required_validate';
+
+    // Getting value of field_is_contact_required of default product
+    $product = $form_state['default_product'];
+    $field = field_get_items('commerce_product', $product, 'field_is_contact_required');
+
+    // If value is 1, then replace our button with markup.
+    if($field[0]['value'] == 1) {
+        unset($form['submit']);
+        $form['ask_for_product'] = array(
+            '#markup' => MODULE_ask_for_product($product),
+            '#weight' => 50,
+        );
+    }
+    }
+    
+function HOOK_commerce_cart_attributes_refresh_alter(&$commands, $form, $form_state) {
+
+    if (!empty($form_state['context'])) {
+        // Getting value of field_is_contact_required of new chosen product
+        $product = $form_state['default_product'];
+        $field = field_get_items('commerce_product', $product, 'field_is_contact_required');
+
+        // If field_is_contact_required is set to 1, then replace a container that have class ".add-to-cart-button" (we just added that class), with our markup
+        if($field[0]['value'] == 1) {
+            $replacement = '.add-to-cart-button';
+            $commands[] = ajax_command_replace($replacement, MODULE_ask_for_product($product));
+        }
+
+    }
+
+    }
+    
+// Return markup of our new button. 'node/7' is node of our contact form, 'subject' is a key of our query string
+function MODULE_ask_for_product($product) {
+    return '<div class="ask-for-product">' . l(t('Ask about product.'), drupal_get_path_alias('node/7'), array('query' => array('subject' => 'Ask about product with SKU: ' . $product->sku))) . '</div>';
+}
+
+
+
+// Prevent some products from be added to cart.
+function MODULE_contact_required_validate($form, &$form_state) {
+
+    $product = $form_state['default_product'];
+    $field = field_get_items('commerce_product', $product, 'field_is_contact_required');
+
+    if($field[0]['value'] == 1) {
+        form_set_error('', t('Don\'t try to be annoying! :P'));
+    }
+
+}
