@@ -4,8 +4,6 @@
  * A module that provides a Request Quote functionality for products
  */
 
-
-
 function HOOK_form_commerce_cart_add_to_cart_form_alter(&$form, &$form_state) {
     // Adding new class to our button, that will allow us, to target it by jQuery
     $form['submit']['#attributes']['class'][] = 'add-to-cart-button';
@@ -47,6 +45,7 @@ function HOOK_commerce_cart_attributes_refresh_alter(&$commands, $form, $form_st
 function MODULE_ask_for_product($product) {
     return '<div class="ask-for-product">' . l(t('Ask about product.'), drupal_get_path_alias('node/7'), array('query' => array('subject' => 'Ask about product with SKU: ' . $product->sku))) . '</div>';
 }
+
 
 
 
