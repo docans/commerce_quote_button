@@ -24,7 +24,14 @@
     }
     }
     
-    
+function commerce_quote_button_preprocess_node(&$vars){
+  if (array_key_exists('ask_for_product',
+$vars['content']['field_product_variations'][0])) {
+    $vars['content']['product:commerce_price'][0]['#markup'] = '';
+  }
+}
+
+
 function commerce_quote_button_commerce_cart_attributes_refresh_alter(&$commands, $form, $form_state) {
 
     if (!empty($form_state['context'])) {
@@ -36,6 +43,8 @@ function commerce_quote_button_commerce_cart_attributes_refresh_alter(&$commands
         if($field[0]['value'] == 1) {
             $replacement = '.add-to-cart-button';
             $commands[] = ajax_command_replace($replacement, commerce_quote_button_ask_for_product($product));
+            $replacement = '.field-name-commerce-price'; // NEW LINE
+            $commands[] = ajax_command_replace($replacement, ''); // NEW LINE
         }
 
     }
